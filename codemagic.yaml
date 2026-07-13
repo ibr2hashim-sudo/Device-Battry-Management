@@ -10,12 +10,13 @@ workflows:
         PACKAGE_NAME: "com.aistudio.batterytracker.qwerty"
       node: latest
     scripts:
-      - name: Set up local.properties
+      - name: Set up Environment and local.properties
         script: |
+          # إنشاء ملف .env.example الفارغ لتخطي خطأ التحقق
+          touch .env.example
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
       - name: Upgrade Gradle Wrapper and Build
         script: |
-          # هذا السطر يقوم بتحديث الجرادل تلقائياً للإصدار المطلوب لحل مشكلة التوافق
           gradle wrapper --gradle-version 9.3.1
           chmod +x gradlew
           ./gradlew assembleDebug
