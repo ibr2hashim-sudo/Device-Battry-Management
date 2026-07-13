@@ -12,9 +12,12 @@ workflows:
     scripts:
       - name: Set up Environment and local.properties
         script: |
-          # إنشاء ملف .env.example الفارغ لتخطي خطأ التحقق
+          # إنشاء ملف البيئة الفارغ
           touch .env.example
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          
+          # توليد ملف debug.keystore تلقائياً لحل مشكلة التوقيع الرقمي
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
       - name: Upgrade Gradle Wrapper and Build
         script: |
           gradle wrapper --gradle-version 9.3.1
