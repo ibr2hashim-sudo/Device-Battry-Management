@@ -13,10 +13,12 @@ workflows:
       - name: Set up local.properties
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-      - name: Fix permissions and Build Android APK
+      - name: Upgrade Gradle Wrapper and Build
         script: |
-          chmod +x gradlew || chmod +x ./gradlew || true
-          gradle assembleDebug || ./gradlew assembleDebug
+          # هذا السطر يقوم بتحديث الجرادل تلقائياً للإصدار المطلوب لحل مشكلة التوافق
+          gradle wrapper --gradle-version 9.3.1
+          chmod +x gradlew
+          ./gradlew assembleDebug
     artifacts:
       - app/build/outputs/apk/**/*.apk
     publishing:
