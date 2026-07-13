@@ -19,7 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ui.AppViewModel
-import com.example.ui.screens.AddDeviceDialog
+import com.example.ui.screens.DeviceFormDialog
 import com.example.ui.screens.DeviceDetailScreen
 import com.example.ui.screens.MainScreen
 import com.example.ui.theme.MyApplicationTheme
@@ -53,10 +53,10 @@ fun BatteryApp() {
     var showAddDialog by remember { mutableStateOf(false) }
 
     if (showAddDialog) {
-        AddDeviceDialog(
+        DeviceFormDialog(
             onDismiss = { showAddDialog = false },
-            onConfirm = { dept, id, name, model, serial ->
-                viewModel.addDevice(dept, id, name, model, serial)
+            onConfirm = { dept, id, name, manufacturer, model, serial ->
+                viewModel.addDevice(dept, id, name, manufacturer, model, serial)
                 showAddDialog = false
             }
         )

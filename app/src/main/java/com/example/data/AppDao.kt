@@ -17,6 +17,12 @@ interface AppDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDevice(device: Device): Long
 
+    @androidx.room.Update
+    suspend fun updateDevice(device: Device)
+
+    @androidx.room.Delete
+    suspend fun deleteDevice(device: Device)
+
     @Query("SELECT * FROM battery_change_logs WHERE deviceId = :deviceId ORDER BY changeDate DESC")
     fun getLogsForDevice(deviceId: Int): Flow<List<BatteryChangeLog>>
 

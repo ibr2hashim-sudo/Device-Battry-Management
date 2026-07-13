@@ -9,6 +9,10 @@ class AppRepository(private val appDao: AppDao) {
 
     suspend fun insertDevice(device: Device): Long = appDao.insertDevice(device)
 
+    suspend fun updateDevice(device: Device) = appDao.updateDevice(device)
+
+    suspend fun deleteDevice(device: Device) = appDao.deleteDevice(device)
+
     fun getLogsForDevice(deviceId: Int): Flow<List<BatteryChangeLog>> = appDao.getLogsForDevice(deviceId)
 
     suspend fun addBatteryChangeLog(deviceId: Int, changeDate: Long, notes: String) {

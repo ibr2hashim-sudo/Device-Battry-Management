@@ -9,6 +9,7 @@ data class Device(
     val department: String,
     val assetId: String, // User's ID
     val name: String,
+    val manufacturer: String,
     val model: String,
     val serialNumber: String,
     val lastBatteryChangeDate: Long

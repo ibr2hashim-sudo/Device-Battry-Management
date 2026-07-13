@@ -61,17 +61,38 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addDevice(department: String, assetId: String, name: String, model: String, serialNumber: String) {
+    fun addDevice(department: String, assetId: String, name: String, manufacturer: String, model: String, serialNumber: String) {
         viewModelScope.launch {
             val device = Device(
                 department = department,
                 assetId = assetId,
                 name = name,
+                manufacturer = manufacturer,
                 model = model,
                 serialNumber = serialNumber,
                 lastBatteryChangeDate = System.currentTimeMillis()
             )
             repository.insertDevice(device)
+        }
+    }
+
+    fun updateDevice(device: Device, department: String, assetId: String, name: String, manufacturer: String, model: String, serialNumber: String) {
+        viewModelScope.launch {
+            val updatedDevice = device.copy(
+                department = department,
+                assetId = assetId,
+                name = name,
+                manufacturer = manufacturer,
+                model = model,
+                serialNumber = serialNumber
+            )
+            repository.updateDevice(updatedDevice)
+        }
+    }
+
+    fun deleteDevice(device: Device) {
+        viewModelScope.launch {
+            repository.deleteDevice(device)
         }
     }
 
@@ -87,9 +108,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             repository.allDevices.collect { devices ->
                 if (devices.isEmpty()) {
-                    addDevice("IT", "ASSET-001", "Laptop Pro", "XPS 15", "SN-92837492")
-                    addDevice("HR", "ASSET-002", "Office Phone", "Galaxy S22", "SN-10293847")
-                    addDevice("Engineering", "ASSET-003", "Test Tablet", "iPad Pro", "SN-56473829")
+                    addDevice("IT", "ASSET-001", "Laptop Pro", "Dell", "XPS 15", "SN-92837492")
+                    addDevice("HR", "ASSET-002", "Office Phone", "Samsung", "Galaxy S22", "SN-10293847")
+                    addDevice("Engineering", "ASSET-003", "Test Tablet", "Apple", "iPad Pro", "SN-56473829")
                 }
             }
         }

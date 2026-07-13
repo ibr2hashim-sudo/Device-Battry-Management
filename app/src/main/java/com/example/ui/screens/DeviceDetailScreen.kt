@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BatteryChargingFull
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,6 +33,8 @@ fun DeviceDetailScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     val logs by viewModel.deviceLogs.collectAsStateWithLifecycle()
 
     var showAddLogDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
     if (showAddLogDialog) {
         AddLogDialog(
@@ -42,6 +46,39 @@ fun DeviceDetailScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         )
     }
 
+    if (showEditDialog && device != null) {
+        DeviceFormDialog(
+            initialDevice = device,
+            onDismiss = { showEditDialog = false },
+            onConfirm = { dept, id, name, manufacturer, model, serial ->
+                viewModel.updateDevice(device!!, dept, id, name, manufacturer, model, serial)
+                showEditDialog = false
+            }
+        )
+    }
+
+    if (showDeleteConfirmDialog && device != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmDialog = false },
+            title = { Text("حذف الجهاز") },
+            text = { Text("هل أنت متأكد من حذف هذا الجهاز وسجلاته بشكل نهائي؟") },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.deleteDevice(device!!)
+                    showDeleteConfirmDialog = false
+                    onBack()
+                }) {
+                    Text("نعم، حذف")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmDialog = false }) {
+                    Text("إلغاء")
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -49,6 +86,16 @@ fun DeviceDetailScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "رجوع")
+                    }
+                },
+                actions = {
+                    if (device != null) {
+                        IconButton(onClick = { showEditDialog = true }) {
+                            Icon(Icons.Default.Edit, contentDescription = "تعديل")
+                        }
+                        IconButton(onClick = { showDeleteConfirmDialog = true }) {
+                            Icon(Icons.Default.Delete, contentDescription = "حذف")
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -154,6 +201,7 @@ fun DeviceDetailsSection(device: Device) {
             DetailRow("القسم", device.department)
             DetailRow("ID", device.assetId)
             DetailRow("اسم الجهاز", device.name)
+            DetailRow("الشركة المصنعة", device.manufacturer)
             DetailRow("الموديل", device.model)
             DetailRow("الرقم التسلسلي", device.serialNumber)
             
